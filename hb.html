@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cys</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-image: url("demopk.jpg"); /* 替换为你的背景图 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* 弹窗容器 */
+        .tip-box {
+            position: absolute;
+            width: 250px;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            overflow: hidden; /* 确保标题栏和内容区无缝衔接 */
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        /* 标题栏样式 */
+        .tip-titlebar {
+            height: 30px;
+            background-color: pink; /* 标题栏粉红色背景 */
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            cursor: move; /* 鼠标悬停显示可拖动图标 */
+        }
+
+        /* 三色小球按钮 */
+        .titlebar-buttons {
+            display: flex;
+            gap: 6px; /* 小球之间的间距 */
+        }
+
+        .button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%; /* 圆形按钮 */
+        }
+
+        .red { background-color: #ff5f58; }
+        .yellow { background-color: #ffbd2e; }
+        .blue { background-color: #14c9c9; }
+
+        /* 弹窗内容区 */
+        .tip-content {
+            padding: 15px;
+            min-height: 70px; /* 确保内容区高度 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* 渐显动画类 */
+        .tip-box.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const tips = [
+            '多喝热水哦~ε٩(๑> ₃ <)۶з', '保持微笑呀(´▽`ʃ♡ƪ)', '每天都要元气满满(๑•̀ㅂ•́)و✧',
+            '记得吃水果(￣ε(#￣)☆', '保持好心情ε٩(๑> ₃ <)۶з', '好好爱自己(๑•̀ㅂ•́)و✧',
+            '我想你了(￣ε(#￣)☆', '梦想成真(´▽`ʃ♡ƪ)', '期待下一次见面ε٩(๑> ₃ <)۶з',
+            '步步高升(￣ε(#￣)☆', '顺顺利利(´▽`ʃ♡ƪ)', '早点休息ε٩(๑> ₃ <)۶з',
+            '愿所有烦恼都消失(´▽`ʃ♡ƪ)','别熬夜(๑•̀ㅂ•́)و✧', '今天过得开心吗(´▽`ʃ♡ƪ)',
+            '天冷了，多穿衣服(´▽`ʃ♡ƪ)','爱你（づ￣3￣）づ╭❤～'
+        ];
+
+        const bgColors = [
+            'lightpink', 'skyblue', 'lightgreen', 'lavender',
+            'lightyellow', 'plum', 'coral', 'bisque',
+            'aquamarine', 'mistyrose', 'honeydew', 'lavenderblush', 'oldlace'
+        ];
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function createRandomTip() {
+            // 创建弹窗容器
+            const tipBox = document.createElement('div');
+            tipBox.className = 'tip-box';
+
+            // 创建标题栏
+            const titlebar = document.createElement('div');
+            titlebar.className = 'tip-titlebar';
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'titlebar-buttons';
+            const redBtn = document.createElement('div');
+            redBtn.className = 'button red';
+            const yellowBtn = document.createElement('div');
+            yellowBtn.className = 'button yellow';
+            const blueBtn = document.createElement('div');
+            blueBtn.className = 'button blue';
+
+            // 组装标题栏
+            buttonsContainer.append(redBtn, yellowBtn, blueBtn);
+            titlebar.appendChild(buttonsContainer);
+
+
+            const content = document.createElement('div');
+            content.className = 'tip-content';
+            const randomTip = tips[getRandomInt(0, tips.length - 1)];
+            content.textContent = randomTip;
+
+
+            const randomColor = bgColors[getRandomInt(0, bgColors.length - 1)];
+            content.style.backgroundColor = randomColor;
+
+
+            tipBox.append(titlebar, content);
+
+            // 随机位置
+            const boxWidth = 250;
+            const boxHeight = 130;
+            const maxX = window.innerWidth - boxWidth;
+            const maxY = window.innerHeight - boxHeight;
+            const randomX = getRandomInt(0, maxX);
+            const randomY = getRandomInt(0, maxY);
+            tipBox.style.left = `${randomX}px`;
+            tipBox.style.top = `${randomY}px`;
+
+            // 添加到页面并触发渐显动画
+            document.body.appendChild(tipBox);
+            setTimeout(() => {
+                tipBox.classList.add('show');
+            }, 10);
+
+            // 5秒后渐隐并移除
+            setTimeout(() => {
+                tipBox.classList.remove('show');
+                setTimeout(() => tipBox.remove(), 1000);
+            }, 10000);
+        }
+
+        // 批量喷出
+        function burstWindows() {
+            for (let i = 0; i < 6; i++) {
+                setTimeout(createRandomTip, i * 100);
+            }
+        }
+
+        // 启动持续喷出
+        window._popInterval = setInterval(burstWindows, 700);
+
+        // ESC键停止
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearInterval(window._popInterval);
+                alert('已停止窗口喷出');
+            }
+        });
+    </script>
+</body>
+</html>
